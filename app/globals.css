@@ -1,0 +1,459 @@
+:root {
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-body: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --bg: #f3ede1;
+  --bg-strong: #e8dcc8;
+  --surface: rgba(255, 252, 245, 0.78);
+  --surface-strong: #fffdf8;
+  --border: rgba(47, 74, 61, 0.12);
+  --ink: #143328;
+  --ink-soft: #4e6258;
+  --accent: #c85f43;
+  --accent-soft: rgba(200, 95, 67, 0.14);
+  --success: #2c6f57;
+  --shadow: 0 24px 70px rgba(20, 51, 40, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body), sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(200, 95, 67, 0.16), transparent 28%),
+    radial-gradient(circle at right 10% top 20%, rgba(20, 51, 40, 0.1), transparent 22%),
+    linear-gradient(180deg, #fbf7ef 0%, var(--bg) 100%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.shell {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 40px 24px 56px;
+}
+
+.hero,
+.statsGrid,
+.analyticsGrid,
+.workspaceGrid {
+  margin-bottom: 24px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(300px, 0.8fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.hero h1,
+.sectionHeader h2,
+.detailCard h2,
+.statCard h3,
+.highlightCard h3,
+.miniCard h3 {
+  margin: 0;
+  font-family: var(--font-display), serif;
+  line-height: 1.05;
+}
+
+.hero h1 {
+  max-width: 14ch;
+  font-size: clamp(2.8rem, 7vw, 5.1rem);
+}
+
+.heroCopy {
+  max-width: 65ch;
+  margin-top: 18px;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.heroPanel,
+.card,
+.statCard {
+  backdrop-filter: blur(16px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+.heroPanel {
+  padding: 24px;
+  background:
+    linear-gradient(180deg, rgba(20, 51, 40, 0.95), rgba(20, 51, 40, 0.88)),
+    var(--surface);
+  color: #f8f1e6;
+}
+
+.heroList {
+  margin: 18px 0 0;
+  padding-left: 18px;
+  line-height: 1.8;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.muted {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.statCard {
+  padding: 22px;
+}
+
+.statCard h3 {
+  margin: 8px 0 10px;
+  font-size: 2rem;
+}
+
+.analyticsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.card {
+  padding: 22px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.sectionHeader h2,
+.detailCard h2 {
+  font-size: 1.65rem;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.breakdownRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.56);
+}
+
+.breakdownValue {
+  font-weight: 800;
+  text-align: right;
+}
+
+.filterBar {
+  display: grid;
+  grid-template-columns: 2fr repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+
+.filterField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterFieldWide {
+  grid-column: span 2;
+}
+
+.filterField label {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.filterField input,
+.filterField select {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid rgba(20, 51, 40, 0.14);
+  border-radius: 14px;
+  background: var(--surface-strong);
+  color: var(--ink);
+}
+
+.filterActions {
+  display: flex;
+  gap: 10px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.buttonPrimary {
+  background: var(--ink);
+  color: #fff8ef;
+}
+
+.buttonGhost {
+  border-color: rgba(20, 51, 40, 0.16);
+  background: transparent;
+  color: var(--ink);
+}
+
+.button[aria-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.workspaceGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.95fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.tableCard,
+.detailCard {
+  height: 100%;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dataTable th,
+.dataTable td {
+  padding: 16px 10px;
+  border-bottom: 1px solid rgba(20, 51, 40, 0.08);
+  text-align: left;
+  vertical-align: top;
+}
+
+.dataTable th {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.tableLink {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tablePrimary {
+  font-weight: 800;
+}
+
+.tableSecondary {
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.rowSelected {
+  background: var(--accent-soft);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.detailMeta {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.statusPill {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(44, 111, 87, 0.12);
+  color: var(--success);
+  font-size: 0.84rem;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.compCardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.miniCard,
+.highlightCard,
+.timelineItem {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(20, 51, 40, 0.08);
+}
+
+.miniCard {
+  padding: 16px;
+}
+
+.miniCard h3 {
+  margin-top: 8px;
+  font-size: 1.2rem;
+}
+
+.highlightCard {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: linear-gradient(145deg, rgba(20, 51, 40, 0.97), rgba(44, 111, 87, 0.88));
+  color: #fff6ea;
+}
+
+.highlightCard .eyebrow,
+.highlightCard .muted {
+  color: rgba(255, 246, 234, 0.84);
+}
+
+.highlightCard h3 {
+  margin: 10px 0 12px;
+  font-size: 2rem;
+}
+
+.revisionForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.formError {
+  margin: 0;
+  color: #a72a2a;
+  font-weight: 700;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.timelineItem {
+  padding: 16px;
+}
+
+.timelineTopline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 1120px) {
+  .hero,
+  .workspaceGrid,
+  .analyticsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filterBar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filterFieldWide {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 720px) {
+  .shell {
+    padding: 24px 16px 40px;
+  }
+
+  .statsGrid,
+  .compCardGrid,
+  .formGrid,
+  .filterBar {
+    grid-template-columns: 1fr;
+  }
+
+  .filterFieldWide {
+    grid-column: span 1;
+  }
+
+  .sectionHeader,
+  .pagination,
+  .timelineTopline,
+  .filterActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero h1 {
+    max-width: none;
+  }
+}
