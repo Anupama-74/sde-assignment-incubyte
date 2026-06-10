@@ -16,10 +16,12 @@ I did not treat AI output as correct by default. I used it as a pair-programming
 1. "Given an HR salary management brief for 10,000 employees, what are the highest-value MVP workflows if the evaluator cares about product thinking and code quality more than breadth?"
 2. "Suggest a schema for salary revisions that keeps current reads fast but preserves history."
 3. "List deterministic unit tests that would catch bugs in salary update logic and payroll analytics."
+4. "What product features would make a salary management assignment feel like compensation intelligence rather than CRUD?"
 
 ## Where human judgment mattered most
 
 - choosing analytics over extra CRUD features
+- deciding to add an intent-based compensation question interface without pulling in an LLM
 - deciding to keep the system single-app instead of over-engineering a distributed backend
 - limiting scope to salary management rather than trying to build a full HRMS
 - shaping the seeded dataset so it felt realistic enough for the UI and analytics

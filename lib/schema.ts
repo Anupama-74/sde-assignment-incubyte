@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS employees (
   base_salary_cents INTEGER NOT NULL,
   bonus_cents INTEGER NOT NULL,
   allowance_cents INTEGER NOT NULL,
+  stock_grant_cents INTEGER NOT NULL DEFAULT 0,
   total_comp_cents INTEGER NOT NULL,
   total_comp_usd_cents INTEGER NOT NULL,
   hire_date TEXT NOT NULL,
@@ -32,9 +33,11 @@ CREATE TABLE IF NOT EXISTS salary_revisions (
   previous_base_salary_cents INTEGER NOT NULL,
   previous_bonus_cents INTEGER NOT NULL,
   previous_allowance_cents INTEGER NOT NULL,
+  previous_stock_grant_cents INTEGER NOT NULL DEFAULT 0,
   new_base_salary_cents INTEGER NOT NULL,
   new_bonus_cents INTEGER NOT NULL,
   new_allowance_cents INTEGER NOT NULL,
+  new_stock_grant_cents INTEGER NOT NULL DEFAULT 0,
   FOREIGN KEY (employee_id) REFERENCES employees(id)
 );
 

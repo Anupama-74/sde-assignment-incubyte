@@ -22,3 +22,11 @@ export function formatDate(value: string) {
 export function formatPercent(value: number) {
   return `${Math.round(value * 100)}%`
 }
+
+export function formatNumber(value: number) {
+  return new Intl.NumberFormat("en-US").format(value)
+}
+
+export function formatZScore(value: number) {
+  return `${value.toFixed(2)}σ`
+}

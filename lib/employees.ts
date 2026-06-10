@@ -19,6 +19,7 @@ export type EmployeeListItem = {
   baseSalaryCents: number
   bonusCents: number
   allowanceCents: number
+  stockGrantCents: number
   totalCompCents: number
   totalCompUsdCents: number
   updatedAt: string
@@ -34,9 +35,11 @@ export type SalaryRevisionRecord = {
   previousBaseSalaryCents: number
   previousBonusCents: number
   previousAllowanceCents: number
+  previousStockGrantCents: number
   newBaseSalaryCents: number
   newBonusCents: number
   newAllowanceCents: number
+  newStockGrantCents: number
 }
 
 export type EmployeeDetail = EmployeeListItem & {
@@ -62,9 +65,11 @@ type SalaryRevisionRow = {
   previous_base_salary_cents: number
   previous_bonus_cents: number
   previous_allowance_cents: number
+  previous_stock_grant_cents: number
   new_base_salary_cents: number
   new_bonus_cents: number
   new_allowance_cents: number
+  new_stock_grant_cents: number
 }
 
 export function listEmployees(
@@ -128,6 +133,7 @@ export function listEmployees(
           base_salary_cents,
           bonus_cents,
           allowance_cents,
+          stock_grant_cents,
           total_comp_cents,
           total_comp_usd_cents,
           updated_at,
@@ -174,6 +180,7 @@ export function getEmployeeById(
           base_salary_cents,
           bonus_cents,
           allowance_cents,
+          stock_grant_cents,
           total_comp_cents,
           total_comp_usd_cents,
           hire_date,
@@ -201,9 +208,11 @@ export function getEmployeeById(
           previous_base_salary_cents,
           previous_bonus_cents,
           previous_allowance_cents,
+          previous_stock_grant_cents,
           new_base_salary_cents,
           new_bonus_cents,
-          new_allowance_cents
+          new_allowance_cents,
+          new_stock_grant_cents
         FROM salary_revisions
         WHERE employee_id = ?
         ORDER BY effective_date DESC, changed_at DESC
@@ -243,18 +252,23 @@ export function applySalaryRevision(
   const nextBaseSalaryCents = toCents(input.baseSalary)
   const nextBonusCents = toCents(input.bonus)
   const nextAllowanceCents = toCents(input.allowance)
+  const nextStockGrantCents = toCents(input.stockGrant)
 
   const unchanged =
     employee.base_salary_cents === nextBaseSalaryCents &&
     employee.bonus_cents === nextBonusCents &&
-    employee.allowance_cents === nextAllowanceCents
+    employee.allowance_cents === nextAllowanceCents &&
+    employee.stock_grant_cents === nextStockGrantCents
 
   if (unchanged) {
     throw new Error("Compensation is unchanged")
   }
 
   const totalCompCents =
-    nextBaseSalaryCents + nextBonusCents + nextAllowanceCents
+    nextBaseSalaryCents +
+    nextBonusCents +
+    nextAllowanceCents +
+    nextStockGrantCents
   const fxToUsd =
     employee.total_comp_cents === 0
       ? 1
@@ -275,9 +289,11 @@ export function applySalaryRevision(
           previous_base_salary_cents,
           previous_bonus_cents,
           previous_allowance_cents,
+          previous_stock_grant_cents,
           new_base_salary_cents,
           new_bonus_cents,
-          new_allowance_cents
+          new_allowance_cents,
+          new_stock_grant_cents
         ) VALUES (
           @id,
           @employeeId,
@@ -288,9 +304,11 @@ export function applySalaryRevision(
           @previousBaseSalaryCents,
           @previousBonusCents,
           @previousAllowanceCents,
+          @previousStockGrantCents,
           @newBaseSalaryCents,
           @newBonusCents,
-          @newAllowanceCents
+          @newAllowanceCents,
+          @newStockGrantCents
         )
       `,
     ).run({
@@ -303,9 +321,11 @@ export function applySalaryRevision(
       previousBaseSalaryCents: employee.base_salary_cents,
       previousBonusCents: employee.bonus_cents,
       previousAllowanceCents: employee.allowance_cents,
+      previousStockGrantCents: employee.stock_grant_cents,
       newBaseSalaryCents: nextBaseSalaryCents,
       newBonusCents: nextBonusCents,
       newAllowanceCents: nextAllowanceCents,
+      newStockGrantCents: nextStockGrantCents,
     })
 
     db.prepare(
@@ -315,6 +335,7 @@ export function applySalaryRevision(
           base_salary_cents = @baseSalaryCents,
           bonus_cents = @bonusCents,
           allowance_cents = @allowanceCents,
+          stock_grant_cents = @stockGrantCents,
           total_comp_cents = @totalCompCents,
           total_comp_usd_cents = @totalCompUsdCents,
           updated_at = @updatedAt
@@ -325,6 +346,7 @@ export function applySalaryRevision(
       baseSalaryCents: nextBaseSalaryCents,
       bonusCents: nextBonusCents,
       allowanceCents: nextAllowanceCents,
+      stockGrantCents: nextStockGrantCents,
       totalCompCents,
       totalCompUsdCents,
       updatedAt: changedAt,
@@ -351,6 +373,7 @@ type EmployeeRow = {
   base_salary_cents: number
   bonus_cents: number
   allowance_cents: number
+  stock_grant_cents: number
   total_comp_cents: number
   total_comp_usd_cents: number
   hire_date: string
@@ -373,6 +396,7 @@ function mapEmployeeListItem(row: EmployeeRow): EmployeeListItem {
     baseSalaryCents: row.base_salary_cents,
     bonusCents: row.bonus_cents,
     allowanceCents: row.allowance_cents,
+    stockGrantCents: row.stock_grant_cents,
     totalCompCents: row.total_comp_cents,
     totalCompUsdCents: row.total_comp_usd_cents,
     updatedAt: row.updated_at,
@@ -390,9 +414,11 @@ function mapRevision(row: SalaryRevisionRow): SalaryRevisionRecord {
     previousBaseSalaryCents: Number(row.previous_base_salary_cents),
     previousBonusCents: Number(row.previous_bonus_cents),
     previousAllowanceCents: Number(row.previous_allowance_cents),
+    previousStockGrantCents: Number(row.previous_stock_grant_cents),
     newBaseSalaryCents: Number(row.new_base_salary_cents),
     newBonusCents: Number(row.new_bonus_cents),
     newAllowanceCents: Number(row.new_allowance_cents),
+    newStockGrantCents: Number(row.new_stock_grant_cents),
   }
 }
 

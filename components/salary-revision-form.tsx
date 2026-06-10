@@ -8,6 +8,7 @@ type SalaryRevisionFormProps = {
   baseSalary: number
   bonus: number
   allowance: number
+  stockGrant: number
 }
 
 export function SalaryRevisionForm({
@@ -15,6 +16,7 @@ export function SalaryRevisionForm({
   baseSalary,
   bonus,
   allowance,
+  stockGrant,
 }: SalaryRevisionFormProps) {
   const router = useRouter()
   const [error, setError] = useState("")
@@ -28,6 +30,7 @@ export function SalaryRevisionForm({
       baseSalary: Number(formData.get("baseSalary")),
       bonus: Number(formData.get("bonus")),
       allowance: Number(formData.get("allowance")),
+      stockGrant: Number(formData.get("stockGrant")),
       effectiveDate: String(formData.get("effectiveDate")),
       reason: String(formData.get("reason")),
       changedBy: "HR Manager",
@@ -95,6 +98,18 @@ export function SalaryRevisionForm({
             id="allowance"
             min="0"
             name="allowance"
+            step="100"
+            type="number"
+          />
+        </div>
+
+        <div className="filterField">
+          <label htmlFor="stockGrant">Stock grant</label>
+          <input
+            defaultValue={stockGrant}
+            id="stockGrant"
+            min="0"
+            name="stockGrant"
             step="100"
             type="number"
           />

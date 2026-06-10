@@ -26,7 +26,9 @@ flowchart TD
 - `lib/employees.ts`
   Employee queries and salary update workflow.
 - `lib/analytics.ts`
-  Payroll summaries and distribution analytics.
+  Payroll summaries, distribution analytics, pay equity, and outlier detection.
+- `lib/compensation-questions.ts`
+  Intent-based compensation Q&A without depending on an LLM.
 - `lib/validation.ts`
   Centralized input validation for salary updates and filters.
 - `app/api/**`
@@ -42,7 +44,7 @@ Most submissions will likely stop at CRUD. I intentionally included analytics be
 
 ### 2. Revision history over destructive updates
 
-Salary changes are stored as revisions with reason, actor, and effective date. The employee record is still updated for fast reads, but the historical trail remains queryable.
+Salary changes are stored as revisions with reason, actor, effective date, and compensation component deltas. The employee record is still updated for fast reads, but the historical trail remains queryable.
 
 ### 3. Deterministic seeded data
 
@@ -54,6 +56,8 @@ The most meaningful tests in this app are not snapshot UI tests. They are:
 
 - filter and pagination correctness
 - compensation aggregate correctness
+- compensation question parsing
+- outlier detection and distribution logic
 - validation and salary update rules
 - revision history creation
 

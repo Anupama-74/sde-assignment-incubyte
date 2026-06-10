@@ -101,6 +101,7 @@ type GeneratedEmployee = {
   baseSalaryCents: number
   bonusCents: number
   allowanceCents: number
+  stockGrantCents: number
   totalCompCents: number
   totalCompUsdCents: number
   hireDate: string
@@ -118,9 +119,11 @@ type GeneratedRevision = {
   previousBaseSalaryCents: number
   previousBonusCents: number
   previousAllowanceCents: number
+  previousStockGrantCents: number
   newBaseSalaryCents: number
   newBonusCents: number
   newAllowanceCents: number
+  newStockGrantCents: number
 }
 
 export function seedDatabase(
@@ -148,12 +151,12 @@ export function seedDatabase(
     INSERT INTO employees (
       id, employee_code, first_name, last_name, email, department, level,
       manager_name, country_code, country_name, currency_code, employment_type,
-      base_salary_cents, bonus_cents, allowance_cents, total_comp_cents,
+      base_salary_cents, bonus_cents, allowance_cents, stock_grant_cents, total_comp_cents,
       total_comp_usd_cents, hire_date, status, updated_at
     ) VALUES (
       @id, @employeeCode, @firstName, @lastName, @email, @department, @level,
       @managerName, @countryCode, @countryName, @currencyCode, @employmentType,
-      @baseSalaryCents, @bonusCents, @allowanceCents, @totalCompCents,
+      @baseSalaryCents, @bonusCents, @allowanceCents, @stockGrantCents, @totalCompCents,
       @totalCompUsdCents, @hireDate, @status, @updatedAt
     )
   `)
@@ -161,12 +164,12 @@ export function seedDatabase(
   const insertRevisions = db.prepare(`
     INSERT INTO salary_revisions (
       id, employee_id, effective_date, reason, changed_by, changed_at,
-      previous_base_salary_cents, previous_bonus_cents, previous_allowance_cents,
-      new_base_salary_cents, new_bonus_cents, new_allowance_cents
+      previous_base_salary_cents, previous_bonus_cents, previous_allowance_cents, previous_stock_grant_cents,
+      new_base_salary_cents, new_bonus_cents, new_allowance_cents, new_stock_grant_cents
     ) VALUES (
       @id, @employeeId, @effectiveDate, @reason, @changedBy, @changedAt,
-      @previousBaseSalaryCents, @previousBonusCents, @previousAllowanceCents,
-      @newBaseSalaryCents, @newBonusCents, @newAllowanceCents
+      @previousBaseSalaryCents, @previousBonusCents, @previousAllowanceCents, @previousStockGrantCents,
+      @newBaseSalaryCents, @newBonusCents, @newAllowanceCents, @newStockGrantCents
     )
   `)
 
@@ -207,7 +210,14 @@ function buildEmployee(
   const allowance = Math.round(interpolate(country.allowanceRange, rng) / 100) * 100
   const bonusRate = interpolate(country.bonusRateRange, rng)
   const bonus = Math.round(roundedBaseSalary * bonusRate)
-  const totalComp = roundedBaseSalary + allowance + bonus
+  const stockGrant = buildStockGrant(
+    roundedBaseSalary,
+    country.stockGrantRateRange,
+    level.name,
+    employmentType,
+    rng,
+  )
+  const totalComp = roundedBaseSalary + allowance + bonus + stockGrant
   const totalCompUsd = Math.round(totalComp * country.fxToUsd)
   const employeeCode = `ACME-${String(index).padStart(5, "0")}`
   const email = `${firstName}.${lastName}.${index}@acme.example`.toLowerCase()
@@ -230,6 +240,7 @@ function buildEmployee(
     baseSalaryCents: roundedBaseSalary * 100,
     bonusCents: bonus * 100,
     allowanceCents: allowance * 100,
+    stockGrantCents: stockGrant * 100,
     totalCompCents: totalComp * 100,
     totalCompUsdCents: totalCompUsd * 100,
     hireDate,
@@ -250,6 +261,7 @@ function buildRevisionHistory(
   const previousBaseSalaryCents = Math.round(employee.baseSalaryCents * 0.91)
   const previousBonusCents = Math.round(employee.bonusCents * 0.88)
   const previousAllowanceCents = Math.round(employee.allowanceCents * 0.96)
+  const previousStockGrantCents = Math.round(employee.stockGrantCents * 0.82)
 
   return [
     {
@@ -271,11 +283,41 @@ function buildRevisionHistory(
       previousBaseSalaryCents,
       previousBonusCents,
       previousAllowanceCents,
+      previousStockGrantCents,
       newBaseSalaryCents: employee.baseSalaryCents,
       newBonusCents: employee.bonusCents,
       newAllowanceCents: employee.allowanceCents,
+      newStockGrantCents: employee.stockGrantCents,
     },
   ]
+}
+
+function buildStockGrant(
+  baseSalary: number,
+  rateRange: [number, number],
+  levelName: string,
+  employmentType: string,
+  rng: () => number,
+) {
+  if (employmentType !== "Full-time") {
+    return 0
+  }
+
+  const rate = interpolate(rateRange, rng)
+  const levelMultiplier =
+    levelName === "L7"
+      ? 1.8
+      : levelName === "L6"
+        ? 1.5
+        : levelName === "L5"
+          ? 1.25
+          : levelName === "L4"
+            ? 1
+            : levelName === "L3"
+              ? 0.65
+              : 0.25
+
+  return Math.round((baseSalary * rate * levelMultiplier) / 250) * 250
 }
 
 function pick<T>(list: readonly T[], rng: () => number): T {

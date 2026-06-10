@@ -17,19 +17,23 @@ This user is accountable for compensation hygiene, periodic updates, and reporti
 
 ## In Scope
 
-### Core employee salary management
+### Core compensation management
 
 - View employees with search, filtering, sorting, and pagination
-- Inspect compensation details for an employee
-- Update salary components with an effective date and reason
-- Preserve salary revision history for traceability
+- Inspect compensation details for an employee, including stock grants
+- Update compensation components with an effective date and reason
+- Preserve immutable salary revision history for traceability
 
 ### Compensation analytics
 
 - Total payroll and average/median compensation
 - Breakdown by country and department
+- Salary distribution across compensation bands
+- Pay equity views by country and department
+- Compensation outlier detection
 - Visibility into recent salary changes
 - Ability to identify highest-paid teams and outliers quickly
+- Ability to ask common compensation questions in plain English without needing SQL
 
 ### Data readiness
 
@@ -59,6 +63,7 @@ I chose to go deep on:
 
 - a realistic compensation model
 - usable analytics
+- compensation intelligence over plain CRUD
 - clear salary revision traceability
 - maintainable code boundaries
 
@@ -76,3 +81,5 @@ The submission is successful if an HR manager can:
   - Which departments are most expensive?
   - How many salary changes happened recently?
   - What is our average and median compensation?
+  - Which employees look like compensation outliers?
+  - How is compensation distributed across salary bands?

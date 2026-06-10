@@ -1,12 +1,23 @@
 import { getDashboardAnalytics } from "@/lib/analytics"
 import { getBootstrappedDatabase } from "@/lib/bootstrap"
+import { answerCompensationQuestion } from "@/lib/compensation-questions"
 import { getEmployeeById, listEmployees } from "@/lib/employees"
-import { formatCurrencyFromCents } from "@/lib/format"
-import { parseListEmployeesInput } from "@/lib/validation"
+import {
+  formatCurrencyFromCents,
+  formatNumber,
+  formatZScore,
+} from "@/lib/format"
+import {
+  parseCompensationQuestionInput,
+  parseListEmployeesInput,
+} from "@/lib/validation"
 
+import { CompensationQuestionPanel } from "@/components/compensation-question-panel"
+import { DistributionChart } from "@/components/distribution-chart"
 import { EmployeeDetailPanel } from "@/components/employee-detail-panel"
 import { EmployeeFilters } from "@/components/employee-filters"
 import { EmployeeTable } from "@/components/employee-table"
+import { EquityTable } from "@/components/equity-table"
 import { StatCard } from "@/components/stat-card"
 
 export const dynamic = "force-dynamic"
@@ -25,6 +36,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   )
 
   const filters = parseListEmployeesInput(normalizedSearchParams)
+  const question = String(normalizedSearchParams.question ?? "").trim()
   const db = getBootstrappedDatabase()
   const analytics = getDashboardAnalytics(db)
   const employees = listEmployees(db, filters)
@@ -32,24 +44,34 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const selectedEmployee = selectedEmployeeId
     ? getEmployeeById(db, selectedEmployeeId)
     : null
+  let parsedQuestion = ""
+  try {
+    parsedQuestion = question
+      ? parseCompensationQuestionInput({ question }).question
+      : ""
+  } catch {
+    parsedQuestion = ""
+  }
+  const questionAnswer = parsedQuestion
+    ? answerCompensationQuestion(db, parsedQuestion)
+    : null
 
   return (
     <main className="shell">
       <section className="hero">
         <div>
           <p className="eyebrow">Incubyte SDE Assessment</p>
-          <h1>Salary management software for HR teams that have outgrown spreadsheets.</h1>
+          <h1>CompLens turns salary records into compensation intelligence.</h1>
           <p className="heroCopy">
-            ACME Pay Compass focuses on the two jobs that matter most for the brief:
-            maintaining compensation safely and answering how the organization pays people across countries and teams.
+            The product is designed for the real HR job behind the assignment: keep compensation data reliable, then answer how a 10,000-person multinational organization actually pays people.
           </p>
         </div>
         <div className="heroPanel">
           <p className="eyebrow">What stands out here</p>
           <ul className="heroList">
-            <li>10,000 seeded employees across six countries</li>
-            <li>Revision history for every salary change</li>
-            <li>Analytics built for HR questions, not just CRUD</li>
+            <li>Versioned compensation with timeline-friendly history</li>
+            <li>Distribution, equity, and outlier analysis for HR decisions</li>
+            <li>Smart compensation Q&amp;A without relying on an LLM</li>
           </ul>
         </div>
       </section>
@@ -78,6 +100,16 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           caption={`Across ${analytics.summary.countryCount.toLocaleString()} countries and ${analytics.summary.departmentCount.toLocaleString()} departments`}
           label="Recent changes"
           value={analytics.summary.revisedLast90Days.toLocaleString()}
+        />
+        <StatCard
+          caption="Highest annual total compensation in the current dataset"
+          label="Highest salary"
+          value={formatCurrencyFromCents(analytics.summary.highestCompUsdCents, "USD")}
+        />
+        <StatCard
+          caption="Potential pay anomalies flagged via department z-scores"
+          label="Outliers"
+          value={formatNumber(analytics.summary.outlierCount)}
         />
       </section>
 
@@ -149,6 +181,59 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                 </div>
               </div>
             ))}
+          </div>
+        </article>
+      </section>
+
+      <section className="insightsGrid">
+        <DistributionChart buckets={analytics.salaryDistribution} />
+        <CompensationQuestionPanel answer={questionAnswer} initialQuestion={question} />
+      </section>
+
+      <section className="insightsGrid">
+        <EquityTable
+          eyebrow="Pay equity by department"
+          items={analytics.departmentEquity}
+          title="Where pay bands diverge"
+        />
+        <EquityTable
+          eyebrow="Pay equity by country"
+          items={analytics.countryEquity}
+          title="Cross-country compensation posture"
+        />
+      </section>
+
+      <section className="insightsGrid">
+        <article className="card">
+          <div className="sectionHeader">
+            <div>
+              <p className="eyebrow">Compensation outliers</p>
+              <h2>Who deserves a closer pay review</h2>
+            </div>
+          </div>
+
+          <div className="stack">
+            {analytics.outliers.length === 0 ? (
+              <p className="muted">No strong outliers were detected in the current seed set.</p>
+            ) : (
+              analytics.outliers.map((employee) => (
+                <div className="breakdownRow" key={employee.id}>
+                  <div>
+                    <strong>{employee.fullName}</strong>
+                    <p className="muted">
+                      {employee.department} · {employee.countryName} · {employee.level}
+                    </p>
+                  </div>
+                  <div className="breakdownValue">
+                    <div>{formatCurrencyFromCents(employee.totalCompUsdCents, "USD")}</div>
+                    <p className="muted">
+                      {formatZScore(employee.zScore)} vs avg{" "}
+                      {formatCurrencyFromCents(employee.departmentAverageUsdCents, "USD", true)}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </article>
       </section>

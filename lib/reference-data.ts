@@ -6,6 +6,7 @@ export type CountryConfig = {
   baseSalaryRange: [number, number]
   allowanceRange: [number, number]
   bonusRateRange: [number, number]
+  stockGrantRateRange: [number, number]
 }
 
 export const COUNTRIES: CountryConfig[] = [
@@ -17,6 +18,7 @@ export const COUNTRIES: CountryConfig[] = [
     baseSalaryRange: [1_000_000, 3_500_000],
     allowanceRange: [75_000, 300_000],
     bonusRateRange: [0.06, 0.18],
+    stockGrantRateRange: [0.04, 0.14],
   },
   {
     code: "US",
@@ -26,6 +28,7 @@ export const COUNTRIES: CountryConfig[] = [
     baseSalaryRange: [75_000, 230_000],
     allowanceRange: [3_000, 15_000],
     bonusRateRange: [0.08, 0.22],
+    stockGrantRateRange: [0.08, 0.28],
   },
   {
     code: "GB",
@@ -35,6 +38,7 @@ export const COUNTRIES: CountryConfig[] = [
     baseSalaryRange: [45_000, 140_000],
     allowanceRange: [2_000, 12_000],
     bonusRateRange: [0.08, 0.2],
+    stockGrantRateRange: [0.06, 0.2],
   },
   {
     code: "DE",
@@ -44,6 +48,7 @@ export const COUNTRIES: CountryConfig[] = [
     baseSalaryRange: [55_000, 150_000],
     allowanceRange: [2_500, 10_000],
     bonusRateRange: [0.07, 0.18],
+    stockGrantRateRange: [0.05, 0.18],
   },
   {
     code: "SG",
@@ -53,15 +58,17 @@ export const COUNTRIES: CountryConfig[] = [
     baseSalaryRange: [55_000, 190_000],
     allowanceRange: [2_000, 10_000],
     bonusRateRange: [0.09, 0.2],
+    stockGrantRateRange: [0.08, 0.24],
   },
   {
-    code: "BR",
-    name: "Brazil",
-    currency: "BRL",
-    fxToUsd: 0.18,
-    baseSalaryRange: [120_000, 420_000],
-    allowanceRange: [6_000, 35_000],
-    bonusRateRange: [0.05, 0.16],
+    code: "AU",
+    name: "Australia",
+    currency: "AUD",
+    fxToUsd: 0.66,
+    baseSalaryRange: [85_000, 210_000],
+    allowanceRange: [2_500, 11_000],
+    bonusRateRange: [0.07, 0.18],
+    stockGrantRateRange: [0.08, 0.24],
   },
 ]
 

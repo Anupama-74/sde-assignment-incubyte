@@ -53,6 +53,7 @@ select {
 .hero,
 .statsGrid,
 .analyticsGrid,
+.insightsGrid,
 .workspaceGrid {
   margin-bottom: 24px;
 }
@@ -128,7 +129,7 @@ select {
 
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -144,6 +145,12 @@ select {
 .analyticsGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.insightsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -334,7 +341,7 @@ select {
 
 .compCardGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 16px;
 }
@@ -381,7 +388,7 @@ select {
 
 .formGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -409,10 +416,72 @@ select {
   margin-bottom: 8px;
 }
 
+.questionCard h3 {
+  margin: 0 0 16px;
+  font-family: var(--font-display), serif;
+  font-size: 1.45rem;
+  line-height: 1.25;
+}
+
+.questionForm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.questionField span {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.questionAnswer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.distributionRow {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.8fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.distributionMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.distributionBarTrack {
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(20, 51, 40, 0.09);
+  overflow: hidden;
+}
+
+.distributionBarFill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(200, 95, 67, 0.95), rgba(44, 111, 87, 0.92));
+}
+
+.distributionValue {
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.compactTable td {
+  white-space: nowrap;
+}
+
 @media (max-width: 1120px) {
   .hero,
   .workspaceGrid,
-  .analyticsGrid {
+  .analyticsGrid,
+  .insightsGrid {
     grid-template-columns: 1fr;
   }
 
@@ -438,6 +507,11 @@ select {
   .compCardGrid,
   .formGrid,
   .filterBar {
+    grid-template-columns: 1fr;
+  }
+
+  .questionForm,
+  .distributionRow {
     grid-template-columns: 1fr;
   }
 

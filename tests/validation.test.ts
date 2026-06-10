@@ -25,6 +25,7 @@ describe("validation", () => {
         baseSalary: 0,
         bonus: 0,
         allowance: 0,
+        stockGrant: 0,
         effectiveDate: "2026-06-01",
         reason: "No-op pay change",
         changedBy: "HR",

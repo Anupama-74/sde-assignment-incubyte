@@ -29,6 +29,7 @@ export const salaryRevisionSchema = z
     baseSalary: z.coerce.number().min(0, "Base salary must be non-negative"),
     bonus: z.coerce.number().min(0, "Bonus must be non-negative"),
     allowance: z.coerce.number().min(0, "Allowance must be non-negative"),
+    stockGrant: z.coerce.number().min(0, "Stock grant must be non-negative"),
     effectiveDate: z
       .string()
       .trim()
@@ -37,12 +38,22 @@ export const salaryRevisionSchema = z
     changedBy: z.string().trim().min(2).default("HR Manager"),
   })
   .refine(
-    (value) => value.baseSalary + value.bonus + value.allowance > 0,
+    (value) =>
+      value.baseSalary + value.bonus + value.allowance + value.stockGrant > 0,
     "Total compensation must be greater than zero",
   )
 
+export const compensationQuestionSchema = z.object({
+  question: z
+    .string()
+    .trim()
+    .min(5, "Ask a more specific compensation question")
+    .max(200, "Question is too long"),
+})
+
 export type ListEmployeesInput = z.infer<typeof listEmployeesSchema>
 export type SalaryRevisionInput = z.infer<typeof salaryRevisionSchema>
+export type CompensationQuestionInput = z.infer<typeof compensationQuestionSchema>
 export type ValidatedEmployeeSort = EmployeeSort
 
 export function parseListEmployeesInput(input: unknown) {
@@ -51,4 +62,8 @@ export function parseListEmployeesInput(input: unknown) {
 
 export function parseSalaryRevisionInput(input: unknown) {
   return salaryRevisionSchema.parse(input)
+}
+
+export function parseCompensationQuestionInput(input: unknown) {
+  return compensationQuestionSchema.parse(input)
 }

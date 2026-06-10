@@ -1,13 +1,15 @@
-# ACME Pay Compass
+# CompLens
 
-`ACME Pay Compass` is a full-stack salary management system for a global HR manager who needs to manage compensation for 10,000 employees and answer questions about how the company pays people.
+`CompLens` is a full-stack compensation intelligence system for a global HR manager who needs to manage salary data for 10,000 employees and answer questions about how the company pays people.
 
 This submission optimizes for product clarity, operational realism, and maintainable code:
 
 - Next.js + TypeScript for a single deployable app with both UI and API
 - SQLite for deterministic local setup and fast tests
 - Seeded 10,000-employee dataset with realistic multi-country compensation
+- Versioned compensation records with stock grants and salary history
 - Analytics designed for HR questions, not just CRUD completeness
+- A deterministic compensation Q&A interface for common HR questions
 - Testable business logic separated from route handlers and UI components
 
 ## Product Scope
@@ -17,7 +19,8 @@ The app supports the workflows I believe matter most for the assignment's person
 - Browse, search, filter, and sort 10,000 employees
 - Inspect individual employee compensation details
 - Update salary components with effective-date tracking and audit-friendly revision history
-- Answer leadership questions through payroll analytics by country, department, and pay distribution
+- Detect compensation outliers with department-relative z-scores
+- Answer leadership questions through payroll analytics, distribution views, and a smart query interface
 
 What I deliberately did not build is documented in [docs/requirements.md](./docs/requirements.md).
 
@@ -44,6 +47,7 @@ Open `http://localhost:3000`.
 ```bash
 npm run dev
 npm run build
+npm start
 npm run seed
 npm run test
 ```
@@ -61,5 +65,6 @@ The important design choice here is not "how much UI can I ship" but "what is th
 - fast local setup
 - clear compensation data model
 - analytics that answer business questions
+- salary distribution, equity, and anomaly detection
 - change history for salary edits
 - tests around the business rules that are easiest to break

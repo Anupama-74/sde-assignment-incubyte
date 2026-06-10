@@ -41,4 +41,39 @@ export function createInMemoryDatabase() {
 
 export function initializeDatabase(db: Database.Database) {
   db.exec(schemaSql)
+  ensureColumn(
+    db,
+    "employees",
+    "stock_grant_cents",
+    "INTEGER NOT NULL DEFAULT 0",
+  )
+  ensureColumn(
+    db,
+    "salary_revisions",
+    "previous_stock_grant_cents",
+    "INTEGER NOT NULL DEFAULT 0",
+  )
+  ensureColumn(
+    db,
+    "salary_revisions",
+    "new_stock_grant_cents",
+    "INTEGER NOT NULL DEFAULT 0",
+  )
+}
+
+function ensureColumn(
+  db: Database.Database,
+  tableName: string,
+  columnName: string,
+  columnDefinition: string,
+) {
+  const columns = db
+    .prepare(`PRAGMA table_info(${tableName})`)
+    .all() as { name?: string }[]
+
+  if (columns.some((column) => column.name === columnName)) {
+    return
+  }
+
+  db.exec(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${columnDefinition}`)
 }

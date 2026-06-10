@@ -54,6 +54,10 @@ export function EmployeeDetailPanel({ employee }: EmployeeDetailPanelProps) {
           <p className="eyebrow">Allowance</p>
           <h3>{formatCurrencyFromCents(employee.allowanceCents, employee.currencyCode)}</h3>
         </article>
+        <article className="miniCard">
+          <p className="eyebrow">Stock grant</p>
+          <h3>{formatCurrencyFromCents(employee.stockGrantCents, employee.currencyCode)}</h3>
+        </article>
       </div>
 
       <article className="highlightCard">
@@ -76,6 +80,7 @@ export function EmployeeDetailPanel({ employee }: EmployeeDetailPanelProps) {
           baseSalary={employee.baseSalaryCents / 100}
           bonus={employee.bonusCents / 100}
           employeeId={employee.id}
+          stockGrant={employee.stockGrantCents / 100}
         />
       </section>
 
@@ -83,7 +88,7 @@ export function EmployeeDetailPanel({ employee }: EmployeeDetailPanelProps) {
         <div className="sectionHeader">
           <div>
             <p className="eyebrow">Revision history</p>
-            <h3>Change log</h3>
+            <h3>Compensation timeline</h3>
           </div>
         </div>
 
@@ -102,6 +107,20 @@ export function EmployeeDetailPanel({ employee }: EmployeeDetailPanelProps) {
                   Base {formatCurrencyFromCents(revision.previousBaseSalaryCents, employee.currencyCode)}
                   {" → "}
                   {formatCurrencyFromCents(revision.newBaseSalaryCents, employee.currencyCode)}
+                </p>
+                <p className="muted">
+                  Bonus {formatCurrencyFromCents(revision.previousBonusCents, employee.currencyCode)}
+                  {" · "}Allowance{" "}
+                  {formatCurrencyFromCents(revision.previousAllowanceCents, employee.currencyCode)}
+                  {" · "}Stock{" "}
+                  {formatCurrencyFromCents(revision.previousStockGrantCents, employee.currencyCode)}
+                </p>
+                <p className="muted">
+                  New mix: Bonus {formatCurrencyFromCents(revision.newBonusCents, employee.currencyCode)}
+                  {" · "}Allowance{" "}
+                  {formatCurrencyFromCents(revision.newAllowanceCents, employee.currencyCode)}
+                  {" · "}Stock{" "}
+                  {formatCurrencyFromCents(revision.newStockGrantCents, employee.currencyCode)}
                 </p>
               </article>
             ))

@@ -14,23 +14,23 @@ describe("employees service", () => {
       INSERT INTO employees (
         id, employee_code, first_name, last_name, email, department, level,
         manager_name, country_code, country_name, currency_code, employment_type,
-        base_salary_cents, bonus_cents, allowance_cents, total_comp_cents,
+        base_salary_cents, bonus_cents, allowance_cents, stock_grant_cents, total_comp_cents,
         total_comp_usd_cents, hire_date, status, updated_at
       ) VALUES
       (
         '1', 'ACME-00001', 'Maya', 'Patel', 'maya@acme.example', 'Engineering', 'L4',
         'Aarav Singh', 'IN', 'India', 'INR', 'Full-time',
-        120000000, 15000000, 5000000, 140000000, 1680000, '2022-01-10', 'active', '2026-05-01T10:00:00.000Z'
+        120000000, 15000000, 5000000, 10000000, 150000000, 1800000, '2022-01-10', 'active', '2026-05-01T10:00:00.000Z'
       ),
       (
         '2', 'ACME-00002', 'Liam', 'Smith', 'liam@acme.example', 'Finance', 'L3',
         'Emma Brown', 'US', 'United States', 'USD', 'Full-time',
-        9000000, 1000000, 500000, 10500000, 10500000, '2021-04-10', 'active', '2026-05-02T10:00:00.000Z'
+        9000000, 1000000, 500000, 200000, 10700000, 10700000, '2021-04-10', 'active', '2026-05-02T10:00:00.000Z'
       ),
       (
         '3', 'ACME-00003', 'Riya', 'Gupta', 'riya@acme.example', 'Engineering', 'L5',
         'Noah Lee', 'IN', 'India', 'INR', 'Full-time',
-        150000000, 25000000, 7500000, 182500000, 2190000, '2020-07-21', 'leave', '2026-05-03T10:00:00.000Z'
+        150000000, 25000000, 7500000, 20000000, 202500000, 2430000, '2020-07-21', 'leave', '2026-05-03T10:00:00.000Z'
       );
     `)
 
@@ -56,12 +56,12 @@ describe("employees service", () => {
       INSERT INTO employees (
         id, employee_code, first_name, last_name, email, department, level,
         manager_name, country_code, country_name, currency_code, employment_type,
-        base_salary_cents, bonus_cents, allowance_cents, total_comp_cents,
+        base_salary_cents, bonus_cents, allowance_cents, stock_grant_cents, total_comp_cents,
         total_comp_usd_cents, hire_date, status, updated_at
       ) VALUES (
         'emp-1', 'ACME-00010', 'Aisha', 'Khan', 'aisha@acme.example', 'Product', 'L4',
         'Sophia Chen', 'US', 'United States', 'USD', 'Full-time',
-        12000000, 1200000, 300000, 13500000, 13500000, '2022-03-11', 'active', '2026-04-01T10:00:00.000Z'
+        12000000, 1200000, 300000, 1500000, 15000000, 15000000, '2022-03-11', 'active', '2026-04-01T10:00:00.000Z'
       );
     `)
 
@@ -69,18 +69,21 @@ describe("employees service", () => {
       baseSalary: 140000,
       bonus: 18000,
       allowance: 5000,
+      stockGrant: 25000,
       effectiveDate: "2026-06-01",
       reason: "Annual compensation refresh",
       changedBy: "HR Manager",
     })
 
-    expect(updated?.totalCompUsdCents).toBe(16300000)
+    expect(updated?.totalCompUsdCents).toBe(18800000)
     expect(updated?.revisionHistory).toHaveLength(1)
     expect(updated?.revisionHistory[0]?.previousBaseSalaryCents).toBe(12000000)
+    expect(updated?.revisionHistory[0]?.previousStockGrantCents).toBe(1500000)
 
     const detail = getEmployeeById(db, "emp-1")
     expect(detail?.baseSalaryCents).toBe(14000000)
     expect(detail?.bonusCents).toBe(1800000)
     expect(detail?.allowanceCents).toBe(500000)
+    expect(detail?.stockGrantCents).toBe(2500000)
   })
 })
