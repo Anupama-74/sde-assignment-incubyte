@@ -1,5 +1,6 @@
+import { BandPill } from "@/components/band-pill"
 import type { EmployeeDetail } from "@/lib/employees"
-import { formatCurrencyFromCents, formatDate } from "@/lib/format"
+import { formatCurrencyFromCents, formatDate, formatPercent } from "@/lib/format"
 
 import { SalaryRevisionForm } from "@/components/salary-revision-form"
 
@@ -67,6 +68,40 @@ export function EmployeeDetailPanel({ employee }: EmployeeDetailPanelProps) {
           Normalized as {formatCurrencyFromCents(employee.totalCompUsdCents, "USD")} for cross-country reporting
         </p>
       </article>
+
+      <section>
+        <div className="sectionHeader">
+          <div>
+            <p className="eyebrow">Salary band</p>
+            <h3>Market position for {employee.level}</h3>
+          </div>
+          <BandPill position={employee.bandPosition} />
+        </div>
+        <p className="muted detailCopy">
+          Compa-ratio is {formatPercent(employee.compaRatio)} of the midpoint for the{" "}
+          {employee.countryName} {employee.level} pay band.
+        </p>
+        <div className="compCardGrid">
+          <article className="miniCard">
+            <p className="eyebrow">Band min</p>
+            <h3>{formatCurrencyFromCents(employee.payBand.minCents, employee.currencyCode)}</h3>
+          </article>
+          <article className="miniCard">
+            <p className="eyebrow">Band midpoint</p>
+            <h3>
+              {formatCurrencyFromCents(employee.payBand.midpointCents, employee.currencyCode)}
+            </h3>
+          </article>
+          <article className="miniCard">
+            <p className="eyebrow">Band max</p>
+            <h3>{formatCurrencyFromCents(employee.payBand.maxCents, employee.currencyCode)}</h3>
+          </article>
+          <article className="miniCard">
+            <p className="eyebrow">Current base</p>
+            <h3>{formatCurrencyFromCents(employee.baseSalaryCents, employee.currencyCode)}</h3>
+          </article>
+        </div>
+      </section>
 
       <section>
         <div className="sectionHeader">

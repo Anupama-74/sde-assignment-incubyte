@@ -1,0 +1,18 @@
+services:
+  comp-lens:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: comp-lens
+    environment:
+      DATABASE_FILE: /app/data/salary-management.sqlite
+      HOSTNAME: 0.0.0.0
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - comp_lens_data:/app/data
+
+volumes:
+  comp_lens_data:

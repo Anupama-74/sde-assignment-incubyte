@@ -48,6 +48,8 @@ describe("employees service", () => {
     expect(result.total).toBe(2)
     expect(result.items).toHaveLength(1)
     expect(result.items[0]?.employeeCode).toBe("ACME-00003")
+    expect(result.items[0]?.bandPosition).toBe("within_band")
+    expect(result.items[0]?.compaRatio).toBeGreaterThan(0.45)
   })
 
   it("creates revision history and updates the employee snapshot", () => {

@@ -2,6 +2,13 @@ import { randomUUID } from "node:crypto"
 
 import type Database from "better-sqlite3"
 
+import {
+  type BandPosition,
+  type PayBand,
+  getBandPosition,
+  getCompaRatio,
+  getPayBand,
+} from "./pay-bands.ts"
 import { SORT_OPTIONS } from "./reference-data.ts"
 import type { ListEmployeesInput, SalaryRevisionInput } from "./validation.ts"
 
@@ -22,6 +29,9 @@ export type EmployeeListItem = {
   stockGrantCents: number
   totalCompCents: number
   totalCompUsdCents: number
+  payBand: PayBand
+  bandPosition: BandPosition
+  compaRatio: number
   updatedAt: string
   status: string
 }
@@ -382,6 +392,8 @@ type EmployeeRow = {
 }
 
 function mapEmployeeListItem(row: EmployeeRow): EmployeeListItem {
+  const payBand = getPayBand(row.country_code, row.level)
+
   return {
     id: row.id,
     employeeCode: row.employee_code,
@@ -399,6 +411,9 @@ function mapEmployeeListItem(row: EmployeeRow): EmployeeListItem {
     stockGrantCents: row.stock_grant_cents,
     totalCompCents: row.total_comp_cents,
     totalCompUsdCents: row.total_comp_usd_cents,
+    payBand,
+    bandPosition: getBandPosition(row.base_salary_cents, payBand),
+    compaRatio: getCompaRatio(row.base_salary_cents, payBand),
     updatedAt: row.updated_at,
     status: row.status,
   }

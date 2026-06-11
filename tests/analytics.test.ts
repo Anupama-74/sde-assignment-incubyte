@@ -47,6 +47,9 @@ describe("analytics service", () => {
     expect(analytics.topEarners[0]?.employeeCode).toBe("ACME-00002")
     expect(analytics.salaryDistribution.some((bucket) => bucket.employeeCount > 0)).toBe(true)
     expect(analytics.departmentEquity).toHaveLength(2)
+    expect(analytics.summary.bandExceptionCount).toBe(2)
+    expect(analytics.bandCompliance.underBandCount).toBe(2)
+    expect(analytics.bandAlerts).toHaveLength(2)
   })
 
   it("flags department-level compensation outliers", () => {

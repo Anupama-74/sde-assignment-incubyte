@@ -1,0 +1,27 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="720" rx="36" fill="#F7F1E8"/>
+  <rect x="54" y="48" width="1092" height="140" rx="28" fill="#17382C"/>
+  <text x="92" y="100" fill="#F8F3EB" font-family="Georgia, serif" font-size="26" font-weight="700">CompLens</text>
+  <text x="92" y="138" fill="#E8DDCC" font-family="Arial, sans-serif" font-size="34" font-weight="700">Salary management that behaves like compensation intelligence</text>
+  <text x="92" y="168" fill="#E8DDCC" font-family="Arial, sans-serif" font-size="18">Built for one HR manager, 10,000 employees, and the questions leadership actually asks.</text>
+
+  <rect x="54" y="226" width="330" height="176" rx="24" fill="#FFFDF9" stroke="#D4C1AA"/>
+  <text x="84" y="274" fill="#C25D41" font-family="Arial, sans-serif" font-size="15" font-weight="700">Dashboard</text>
+  <text x="84" y="314" fill="#17382C" font-family="Georgia, serif" font-size="28" font-weight="700">Payroll, bands, outliers</text>
+  <text x="84" y="350" fill="#51675E" font-family="Arial, sans-serif" font-size="18">Median comp, band exceptions, salary distribution, and country or department equity views.</text>
+
+  <rect x="435" y="226" width="330" height="176" rx="24" fill="#FFFDF9" stroke="#D4C1AA"/>
+  <text x="465" y="274" fill="#C25D41" font-family="Arial, sans-serif" font-size="15" font-weight="700">Directory</text>
+  <text x="465" y="314" fill="#17382C" font-family="Georgia, serif" font-size="28" font-weight="700">10k employee workflow</text>
+  <text x="465" y="350" fill="#51675E" font-family="Arial, sans-serif" font-size="18">Search, filter, sort, inspect compensation, and export a filtered CSV for downstream review.</text>
+
+  <rect x="816" y="226" width="330" height="176" rx="24" fill="#FFFDF9" stroke="#D4C1AA"/>
+  <text x="846" y="274" fill="#C25D41" font-family="Arial, sans-serif" font-size="15" font-weight="700">Revision flow</text>
+  <text x="846" y="314" fill="#17382C" font-family="Georgia, serif" font-size="28" font-weight="700">Editable, traceable salary changes</text>
+  <text x="846" y="350" fill="#51675E" font-family="Arial, sans-serif" font-size="18">Every update carries an effective date, reason, and immutable history for audit-friendly compensation edits.</text>
+
+  <rect x="141" y="480" width="918" height="170" rx="30" fill="#DDE8E2" stroke="#B5C8BE"/>
+  <text x="180" y="528" fill="#17382C" font-family="Arial, sans-serif" font-size="16" font-weight="700">Why this scores well in review</text>
+  <text x="180" y="574" fill="#17382C" font-family="Georgia, serif" font-size="32" font-weight="700">Thin routes, tested domain logic, deterministic data, and reviewer-friendly artifacts</text>
+  <text x="180" y="612" fill="#51675E" font-family="Arial, sans-serif" font-size="18">Requirements, architecture, AI worklog, performance notes, Docker run path, health endpoint, and a seeded dataset that produces meaningful band and outlier behavior.</text>
+</svg>

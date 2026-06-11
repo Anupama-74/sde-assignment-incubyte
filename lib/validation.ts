@@ -10,7 +10,7 @@ export const listEmployeesSchema = z.object({
   department: z.string().trim().optional().default(""),
   level: z.string().trim().optional().default(""),
   page: z.coerce.number().int().min(1).optional().default(1),
-  pageSize: z.coerce.number().int().min(5).max(100).optional().default(25),
+  pageSize: z.coerce.number().int().min(5).max(10_000).optional().default(25),
   sort: z
     .enum([
       "updated_desc",

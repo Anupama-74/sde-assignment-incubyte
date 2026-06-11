@@ -30,10 +30,12 @@ This user is accountable for compensation hygiene, periodic updates, and reporti
 - Breakdown by country and department
 - Salary distribution across compensation bands
 - Pay equity views by country and department
+- Salary-band compliance and compa-ratio visibility
 - Compensation outlier detection
 - Visibility into recent salary changes
 - Ability to identify highest-paid teams and outliers quickly
 - Ability to ask common compensation questions in plain English without needing SQL
+- CSV export of the filtered employee list for downstream review
 
 ### Data readiness
 
@@ -50,7 +52,7 @@ This user is accountable for compensation hygiene, periodic updates, and reporti
 
 - Authentication and role-based access control
 - Payroll execution, tax calculations, and payslip generation
-- Bulk CSV import/export workflows
+- Bulk CSV import workflows
 - Complex approval chains for salary changes
 - Real-time collaboration or notifications
 - Full audit event pipeline beyond revision history
@@ -77,9 +79,10 @@ The submission is successful if an HR manager can:
 - understand how that employee is paid
 - make a salary change safely with context
 - answer questions like:
-  - Which country has the highest payroll?
-  - Which departments are most expensive?
-  - How many salary changes happened recently?
-  - What is our average and median compensation?
-  - Which employees look like compensation outliers?
-  - How is compensation distributed across salary bands?
+  Which country has the highest payroll?
+  Which departments are most expensive?
+  How many salary changes happened recently?
+  What is our average and median compensation?
+- Which employees look like compensation outliers?
+- How is compensation distributed across salary bands?
+- Which employees are outside their reference pay bands?

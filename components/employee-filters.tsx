@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { buildEmployeeExportHref } from "@/lib/filter-query"
 import { COUNTRIES, DEPARTMENTS, LEVELS } from "@/lib/reference-data"
 import type { ListEmployeesInput } from "@/lib/validation"
 
@@ -84,6 +85,9 @@ export function EmployeeFilters({ filters }: EmployeeFiltersProps) {
         <button className="button buttonPrimary" type="submit">
           Apply filters
         </button>
+        <Link className="button buttonGhost" href={buildEmployeeExportHref(filters)}>
+          Export CSV
+        </Link>
         <Link className="button buttonGhost" href="/">
           Reset
         </Link>

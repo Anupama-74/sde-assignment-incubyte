@@ -38,10 +38,16 @@ describe("compensation questions", () => {
       db,
       "How many employees earn above 100k?",
     )
+    const bandCompliance = answerCompensationQuestion(
+      db,
+      "How many employees are outside their pay band?",
+    )
 
     expect(highestPayroll.matchedIntent).toBe("highest_payroll_department")
     expect(highestPayroll.answer).toContain("Engineering")
     expect(aboveThreshold.matchedIntent).toBe("count_above_threshold")
     expect(aboveThreshold.answer).toContain("2 employees")
+    expect(bandCompliance.matchedIntent).toBe("band_compliance")
+    expect(bandCompliance.answer).toContain("outside their reference salary band")
   })
 })

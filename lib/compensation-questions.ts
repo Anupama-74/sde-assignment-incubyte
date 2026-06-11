@@ -17,6 +17,7 @@ export type CompensationQuestionAnswer = {
     | "count_above_threshold"
     | "payroll_by_country"
     | "median_department_salary"
+    | "band_compliance"
     | "unknown"
 }
 
@@ -133,6 +134,32 @@ export function answerCompensationQuestion(
     }
   }
 
+  if (
+    normalized.includes("band") &&
+    (normalized.includes("outside") ||
+      normalized.includes("under") ||
+      normalized.includes("over") ||
+      normalized.includes("compa"))
+  ) {
+    const outsideBandCount =
+      analytics.bandCompliance.underBandCount + analytics.bandCompliance.overBandCount
+
+    return {
+      title: "Salary band compliance",
+      answer: `${outsideBandCount.toLocaleString()} employees sit outside their reference salary band, with ${analytics.bandCompliance.underBandCount.toLocaleString()} under band and ${analytics.bandCompliance.overBandCount.toLocaleString()} over band.`,
+      evidence: [
+        `${analytics.bandCompliance.withinBandCount.toLocaleString()} employees remain within band`,
+        `Average compa-ratio ${formatRatio(analytics.bandCompliance.averageCompaRatio)}`,
+        `Median compa-ratio ${formatRatio(analytics.bandCompliance.medianCompaRatio)}`,
+        ...analytics.bandAlerts.slice(0, 3).map(
+          (employee) =>
+            `${employee.fullName} · ${employee.department} · ${formatRatio(employee.compaRatio)} · ${employee.bandPosition.replace("_", " ")}`,
+        ),
+      ],
+      matchedIntent: "band_compliance",
+    }
+  }
+
   if (normalized.includes("payroll") && normalized.includes("country")) {
     const topCountries = analytics.payrollByCountry.slice(0, 4)
 
@@ -173,11 +200,12 @@ export function answerCompensationQuestion(
   return {
     title: "Suggested compensation questions",
     answer:
-      "Try asking about payroll by department, salary averages by country, outlier counts, or top earners.",
+      "Try asking about payroll by department, salary averages by country, pay-band exceptions, or top earners.",
     evidence: [
       "Which department has the highest payroll?",
       "Average salary in India",
       "How many employees earn above 100k?",
+      "How many employees are outside their pay band?",
       "Median Engineering salary",
     ],
     matchedIntent: "unknown",
@@ -219,4 +247,8 @@ function formatUsd(cents: number, compact = false) {
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
+}
+
+function formatRatio(value: number) {
+  return `${Math.round(value * 100)}%`
 }

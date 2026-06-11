@@ -1,5 +1,13 @@
 import type Database from "better-sqlite3"
 
+import {
+  type BandPosition,
+  type PayBand,
+  getBandPosition,
+  getCompaRatio,
+  getPayBand,
+} from "./pay-bands.ts"
+
 export type DashboardSummary = {
   employeeCount: number
   activeCount: number
@@ -13,6 +21,7 @@ export type DashboardSummary = {
   lowestCompUsdCents: number
   revisedLast90Days: number
   outlierCount: number
+  bandExceptionCount: number
 }
 
 export type PayrollBreakdownItem = {
@@ -65,8 +74,35 @@ export type CompensationSnapshot = {
   department: string
   countryCode: string
   countryName: string
+  currencyCode: string
   level: string
+  baseSalaryCents: number
+  payBand: PayBand
+  bandPosition: BandPosition
+  compaRatio: number
   totalCompUsdCents: number
+}
+
+export type BandComplianceSummary = {
+  underBandCount: number
+  withinBandCount: number
+  overBandCount: number
+  averageCompaRatio: number
+  medianCompaRatio: number
+}
+
+export type BandAlert = {
+  id: string
+  employeeCode: string
+  fullName: string
+  department: string
+  countryName: string
+  currencyCode: string
+  level: string
+  baseSalaryCents: number
+  payBand: PayBand
+  bandPosition: BandPosition
+  compaRatio: number
 }
 
 export type DashboardAnalytics = {
@@ -78,6 +114,8 @@ export type DashboardAnalytics = {
   countryEquity: EquityBreakdownItem[]
   topEarners: TopEarner[]
   outliers: CompensationOutlier[]
+  bandCompliance: BandComplianceSummary
+  bandAlerts: BandAlert[]
 }
 
 type BreakdownRow = {
@@ -106,7 +144,9 @@ type CompensationRow = {
   department: string
   country_code: string
   country_name: string
+  currency_code: string
   level: string
+  base_salary_cents: number
   total_comp_usd_cents: number
 }
 
@@ -150,6 +190,8 @@ export function getDashboardAnalytics(
 
   const snapshots = getCompensationSnapshots(db)
   const outliers = detectCompensationOutliers(snapshots)
+  const bandCompliance = buildBandCompliance(snapshots)
+  const bandAlerts = buildBandAlerts(snapshots)
 
   const annualPayrollUsdCents = Number(summaryRow?.annual_payroll_usd_cents ?? 0)
   const averageCompUsdCents = Number(summaryRow?.average_comp_usd_cents ?? 0)
@@ -170,6 +212,8 @@ export function getDashboardAnalytics(
       lowestCompUsdCents: Number(summaryRow?.lowest_comp_usd_cents ?? 0),
       revisedLast90Days: Number(revisedLast90DaysRow?.count ?? 0),
       outlierCount: outliers.length,
+      bandExceptionCount:
+        bandCompliance.underBandCount + bandCompliance.overBandCount,
     },
     payrollByCountry: queryPayrollBreakdown(db, "country_name"),
     payrollByDepartment: queryPayrollBreakdown(db, "department"),
@@ -189,6 +233,8 @@ export function getDashboardAnalytics(
         totalCompUsdCents: employee.totalCompUsdCents,
       })),
     outliers,
+    bandCompliance,
+    bandAlerts,
   }
 }
 
@@ -204,23 +250,34 @@ export function getCompensationSnapshots(db: Database.Database): CompensationSna
           department,
           country_code,
           country_name,
+          currency_code,
           level,
+          base_salary_cents,
           total_comp_usd_cents
         FROM employees
       `,
     )
     .all()
     .map((row) => row as CompensationRow)
-    .map((row) => ({
-      id: row.id,
-      employeeCode: row.employee_code,
-      fullName: `${row.first_name} ${row.last_name}`,
-      department: row.department,
-      countryCode: row.country_code,
-      countryName: row.country_name,
-      level: row.level,
-      totalCompUsdCents: row.total_comp_usd_cents,
-    }))
+    .map((row) => {
+      const payBand = getPayBand(row.country_code, row.level)
+
+      return {
+        id: row.id,
+        employeeCode: row.employee_code,
+        fullName: `${row.first_name} ${row.last_name}`,
+        department: row.department,
+        countryCode: row.country_code,
+        countryName: row.country_name,
+        currencyCode: row.currency_code,
+        level: row.level,
+        baseSalaryCents: row.base_salary_cents,
+        payBand,
+        bandPosition: getBandPosition(row.base_salary_cents, payBand),
+        compaRatio: getCompaRatio(row.base_salary_cents, payBand),
+        totalCompUsdCents: row.total_comp_usd_cents,
+      }
+    })
 }
 
 export function detectCompensationOutliers(
@@ -343,7 +400,55 @@ function buildEquityBreakdown(
     .sort((left, right) => right.averageCompUsdCents - left.averageCompUsdCents)
 }
 
-function computeMedian(values: number[]) {
+function buildBandCompliance(
+  snapshots: CompensationSnapshot[],
+): BandComplianceSummary {
+  const compaRatios = snapshots.map((employee) => employee.compaRatio)
+
+  return {
+    underBandCount: snapshots.filter((employee) => employee.bandPosition === "under_band")
+      .length,
+    withinBandCount: snapshots.filter(
+      (employee) => employee.bandPosition === "within_band",
+    ).length,
+    overBandCount: snapshots.filter((employee) => employee.bandPosition === "over_band")
+      .length,
+    averageCompaRatio:
+      compaRatios.length === 0
+        ? 0
+        : Number(
+            (
+              compaRatios.reduce((sum, value) => sum + value, 0) / compaRatios.length
+            ).toFixed(3),
+          ),
+    medianCompaRatio: computeMedian(compaRatios, 3),
+  }
+}
+
+function buildBandAlerts(snapshots: CompensationSnapshot[]): BandAlert[] {
+  return snapshots
+    .filter((employee) => employee.bandPosition !== "within_band")
+    .sort(
+      (left, right) =>
+        Math.abs(right.compaRatio - 1) - Math.abs(left.compaRatio - 1),
+    )
+    .slice(0, 8)
+    .map((employee) => ({
+      id: employee.id,
+      employeeCode: employee.employeeCode,
+      fullName: employee.fullName,
+      department: employee.department,
+      countryName: employee.countryName,
+      currencyCode: employee.currencyCode,
+      level: employee.level,
+      baseSalaryCents: employee.baseSalaryCents,
+      payBand: employee.payBand,
+      bandPosition: employee.bandPosition,
+      compaRatio: employee.compaRatio,
+    }))
+}
+
+function computeMedian(values: number[], precision = 0) {
   if (values.length === 0) {
     return 0
   }
@@ -352,12 +457,12 @@ function computeMedian(values: number[]) {
   const midpoint = Math.floor(sorted.length / 2)
 
   if (sorted.length % 2 === 1) {
-    return sorted[midpoint] ?? 0
+    return Number((sorted[midpoint] ?? 0).toFixed(precision))
   }
 
   const low = sorted[midpoint - 1] ?? 0
   const high = sorted[midpoint] ?? 0
-  return Math.round((low + high) / 2)
+  return Number((((low + high) / 2)).toFixed(precision))
 }
 
 function groupBy<T>(

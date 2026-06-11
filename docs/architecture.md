@@ -23,10 +23,16 @@ flowchart TD
 
 - `lib/db.ts`
   Opens and initializes SQLite safely.
+- `app/api/health/route.ts`
+  Lightweight deployment and smoke-test endpoint for reviewers.
 - `lib/employees.ts`
-  Employee queries and salary update workflow.
+  Employee queries, pay-band enrichment, and salary update workflow.
 - `lib/analytics.ts`
-  Payroll summaries, distribution analytics, pay equity, and outlier detection.
+  Payroll summaries, distribution analytics, pay equity, salary-band compliance, and outlier detection.
+- `lib/pay-bands.ts`
+  Reference salary-band calculations and compa-ratio helpers.
+- `lib/csv-export.ts`
+  Filtered employee export formatting for downstream review.
 - `lib/compensation-questions.ts`
   Intent-based compensation Q&A without depending on an LLM.
 - `lib/validation.ts`
@@ -58,13 +64,30 @@ The most meaningful tests in this app are not snapshot UI tests. They are:
 - compensation aggregate correctness
 - compensation question parsing
 - outlier detection and distribution logic
+- pay-band classification and compa-ratio math
 - validation and salary update rules
 - revision history creation
+
+### 5. Reference pay bands as explicit product logic
+
+The HR manager does not just need salary storage. They need to know whether compensation is inside or outside an expected range. I modeled pay bands as explicit domain logic derived from country and level, then reused that logic in:
+
+- the employee list
+- employee detail views
+- analytics
+- deterministic Q&A
+- CSV export
+
+That keeps reviewer-facing insights consistent across every surface.
+
+### 6. Deployment favors reviewer convenience over platform novelty
+
+I kept the app SQLite-backed because it makes local review and deterministic testing much easier. To avoid hand-waving away deployability, I added a container path and a health endpoint rather than pretending a serverless SQLite setup would be production-friendly.
 
 ## Future Improvements
 
 - authentication and role-aware permissions
-- configurable compensation bands by country and level
+- editable compensation bands backed by admin-managed reference tables
 - CSV import with background validation
 - approval workflow for compensation changes
 - migration from SQLite to Postgres for multi-user production usage
